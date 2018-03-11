@@ -55,7 +55,7 @@ def init():
     )
 
     parser.add_argument(
-        '-i',
+        '-s',
         '--reload-interval-seconds',
         type=int,
         required=False,
@@ -76,7 +76,7 @@ def init():
     return parser.parse_args()
 
 
-def main(target_dir, command, reload_threshold_seconds, is_disable_capture_stdout):
+def main_action(target_dir, command, reload_threshold_seconds, is_disable_capture_stdout):
     while True:
         event_handler = PyWatcher(
             process_command=command,
@@ -98,11 +98,15 @@ def main(target_dir, command, reload_threshold_seconds, is_disable_capture_stdou
         observer.join()
 
 
-if __name__ in '__main__':
+def main():
     args = init()
-    main(
+    main_action(
         target_dir=args.target_dir_path,
         command=args.target_command_str,
         reload_threshold_seconds=args.reload_threshold_seconds,
         is_disable_capture_stdout=args.is_disable_capture_stdout
     )
+
+
+if __name__ in '__main__':
+    main()
