@@ -1,7 +1,9 @@
 # coding: utf-8
+import os
 import threading
 import datetime
 import subprocess
+import fnmatch
 
 from watchdog.events import FileSystemEventHandler
 from logging import getLogger
@@ -10,7 +12,7 @@ default_logger = getLogger(__name__)
 
 class PyWatcher(FileSystemEventHandler):
 
-    def __init__(self, process_command, reload_threshold_seconds, is_capture_subprocess_output, logger=None):
+    def __init__(self, process_command, reload_threshold_seconds, is_capture_subprocess_output, pattern_list=None, logger=None):
         """
         :param str process_command: process command string
         :param int reload_threshold_seconds: reload min threshold seconds.
@@ -20,6 +22,8 @@ class PyWatcher(FileSystemEventHandler):
         self.process_command = process_command
         self.reload_threshold_seconds = reload_threshold_seconds
         self.is_capture_subprocess_output = is_capture_subprocess_output
+        self.pattern_list = pattern_list or ['*']
+
         self.logger = logger or default_logger
         self.process = self._run_sub_process()
         self.reload_time = datetime.datetime.now()
@@ -75,11 +79,32 @@ class PyWatcher(FileSystemEventHandler):
             pass
 
     def on_created(self, event):
-        self._reload_sub_process()
+        """
+        :param watchdog.events.FileSystemEvent event:
+        :return:
+        """
+        if self._is_match_pattern(event.src_path):
+            self._reload_sub_process()
 
     def on_modified(self, event):
-        self._reload_sub_process()
+        """
+        :param watchdog.events.FileSystemEvent event:
+        :return:
+        """
+        if self._is_match_pattern(event.src_path):
+            self._reload_sub_process()
 
     def on_deleted(self, event):
-        self._reload_sub_process()
+        """
+        :param watchdog.events.FileSystemEvent event:
+        :return:
+        """
+        if self._is_match_pattern(event.src_path):
+            self._reload_sub_process()
 
+    def _is_match_pattern(self, file_path):
+        base_name = os.path.basename(file_path)
+        for pattern in self.pattern_list:
+            if fnmatch.fnmatch(base_name, pattern):
+                return True
+        return False

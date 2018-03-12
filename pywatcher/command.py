@@ -73,15 +73,27 @@ def init():
         help='is_disable_capture_stdout'
     )
 
+    parser.add_argument(
+        '-p',
+        '--pattern',
+        type=str,
+        nargs='*',
+        required=False,
+        dest='target_pattern_list',
+        help='target pattern for monitoring. default, all file match.',
+        metavar='TARGET_PATTERN',
+    )
+
     return parser.parse_args()
 
 
-def main_action(target_dir, command, reload_threshold_seconds, is_disable_capture_stdout):
+def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_list, is_disable_capture_stdout):
     while True:
         event_handler = PyWatcher(
             process_command=command,
             reload_threshold_seconds=reload_threshold_seconds,
             is_capture_subprocess_output=not is_disable_capture_stdout,
+            pattern_list=watch_pattern_list,
             logger=logger
         )
         observer = Observer()
@@ -104,7 +116,8 @@ def main():
         target_dir=args.target_dir_path,
         command=args.target_command_str,
         reload_threshold_seconds=args.reload_threshold_seconds,
-        is_disable_capture_stdout=args.is_disable_capture_stdout
+        watch_pattern_list=args.target_pattern_list,
+        is_disable_capture_stdout=args.is_disable_capture_stdout,
     )
 
 

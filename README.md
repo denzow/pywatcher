@@ -69,10 +69,21 @@ examples
 
 #### more silently
 
+no output subprocess.
+
 ```sh
 (pywatcher) denzownoMacBook-Pro:pywatcher denzow$ pywatcher -t. -c 'ping localhost' --disable-capture-stdout
 2018-03-11 23:36:12,559 - INFO - [start process]: ping localhost
 2018-03-11 23:36:19,136 - INFO - [reload process]: ping localhost  <-- file changed. so reload
 2018-03-11 23:36:19,136 - INFO - [start process]: ping localhost
 :
+```
+
+#### specified pattern
+
+reload only '*.py' file modified.
+
+```sh
+(pywatcher) denzownoMacBook-Pro:pywatcher denzow$ python pywatcher/command.py -t ./ -c 'ping localhost' -p '*.py'
+
 ```
