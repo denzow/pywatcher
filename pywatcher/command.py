@@ -84,16 +84,28 @@ def init():
         metavar='TARGET_PATTERN',
     )
 
+    parser.add_argument(
+        '--signal',
+        required=False,
+        type=str,
+        default='TERM',
+        choices=('TERM', 'KILL'),
+        dest='reload_signal',
+        help='reload_signal'
+    )
+
     return parser.parse_args()
 
 
-def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_list, is_disable_capture_stdout):
+def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_list,
+                reload_signal, is_disable_capture_stdout):
     while True:
         event_handler = PyWatcher(
             process_command=command,
             reload_threshold_seconds=reload_threshold_seconds,
             is_capture_subprocess_output=not is_disable_capture_stdout,
             pattern_list=watch_pattern_list,
+            reload_signal=reload_signal,
             logger=logger
         )
         observer = Observer()
@@ -117,6 +129,7 @@ def main():
         command=args.target_command_str,
         reload_threshold_seconds=args.reload_threshold_seconds,
         watch_pattern_list=args.target_pattern_list,
+        reload_signal=args.reload_signal,
         is_disable_capture_stdout=args.is_disable_capture_stdout,
     )
 
