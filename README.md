@@ -89,6 +89,23 @@ no output subprocess.
 reload only '*.py' file modified.
 
 ```sh
-(pywatcher) denzownoMacBook-Pro:pywatcher denzow$ python pywatcher/command.py -t ./ -c 'ping localhost' -p '*.py'
+(pywatcher) denzownoMacBook-Pro:pywatcher denzow$ pywatcher -t ./ -c 'ping localhost' -p '*.py'
 
+```
+
+
+#### send signal change
+
+pywatcher send **SIGTERM** to process when reload. if you set `--signal KILL` option, send **SIGKILL**.
+
+```sh
+(pywatcher) denzownoMacBook-Pro:pywatcher denzow$ python pywatcher/command.py -t . -c 'echo reload'  -s 1 --signal KILL
+2018-05-03 11:57:37,940 - INFO - [start process]: echo reload
+2018-05-03 11:57:37,945 - INFO - [start process]: PID is 4885
+2018-05-03 11:57:37,952 - DEBUG - [subprocess_output]: reload
+2018-05-03 11:57:46,657 - INFO - [reload process]: echo reload
+2018-05-03 11:57:46,657 - DEBUG - KILL signal send to process
+2018-05-03 11:57:46,657 - INFO - [start process]: echo reload
+2018-05-03 11:57:46,660 - INFO - [start process]: PID is 4887
+2018-05-03 11:57:46,662 - DEBUG - [subprocess_output]: reload
 ```
