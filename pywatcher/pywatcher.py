@@ -43,6 +43,7 @@ class PyWatcher(FileSystemEventHandler):
             bufsize=0,
             close_fds=True
         )
+        self.logger.info('[start process]: PID is {}'.format(process.pid))
         # run subprocess stream watcher thread.
         if self.is_capture_subprocess_output:
             read_thread = threading.Thread(target=self._capture_subprocess_stdout, args=(process,), daemon=True)
@@ -59,6 +60,7 @@ class PyWatcher(FileSystemEventHandler):
             self.logger.info('[reload process]: {}'.format(self.process_command))
             self.process.stdout.close()
             self._send_signal()
+
             self.process = self._run_sub_process()
             self.reload_time = datetime.datetime.now()
 
@@ -69,7 +71,7 @@ class PyWatcher(FileSystemEventHandler):
         :return:
         """
         try:
-            for line in iter(process.stdout.readline, ''):
+            for line in iter(process.stdout.readline, b''):
                 if line and hasattr(line, 'decode'):
                     output = line.decode('utf-8').rstrip()
                 else:
