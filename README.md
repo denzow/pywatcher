@@ -15,7 +15,9 @@ usage
 
 ```sh
 usage: pywatcher [-h] -t TARGET_DIR_PATH -c TARGET_COMMAND_STR
-                 [-i RELOAD_THRESHOLD_SECONDS] [--disable-capture-stdout]
+                 [-s RELOAD_THRESHOLD_SECONDS] [--disable-capture-stdout]
+                 [-p [TARGET_PATTERN [TARGET_PATTERN ...]]]
+                 [--signal {TERM,KILL}]
 
 -----------------------------------------------------------------------
 PyWatcher:
@@ -35,10 +37,13 @@ optional arguments:
                         target directory for watching.
   -c TARGET_COMMAND_STR, --command TARGET_COMMAND_STR
                         target command. this command execute and restart when file changed.
-  -i RELOAD_THRESHOLD_SECONDS, --reload-interval-seconds RELOAD_THRESHOLD_SECONDS
+  -s RELOAD_THRESHOLD_SECONDS, --reload-interval-seconds RELOAD_THRESHOLD_SECONDS
                         reload threshold seconds.
   --disable-capture-stdout
                         is_disable_capture_stdout
+  -p [TARGET_PATTERN [TARGET_PATTERN ...]], --pattern [TARGET_PATTERN [TARGET_PATTERN ...]]
+                        target pattern for monitoring. default, all file match.
+  --signal {TERM,KILL}  reload_signal
 ```
 
 if you quit PyWatcher, then `ctrl + c`.
