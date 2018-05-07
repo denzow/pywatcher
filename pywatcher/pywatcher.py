@@ -3,6 +3,7 @@ import os
 import threading
 import datetime
 import subprocess
+import shlex
 import fnmatch
 
 from watchdog.events import FileSystemEventHandler
@@ -12,7 +13,8 @@ default_logger = getLogger(__name__)
 
 class PyWatcher(FileSystemEventHandler):
 
-    def __init__(self, process_command, reload_threshold_seconds, is_capture_subprocess_output, reload_signal='TERM', pattern_list=None, logger=None):
+    def __init__(self, process_command, reload_threshold_seconds, is_capture_subprocess_output, is_use_shell=False,
+                 reload_signal='TERM', pattern_list=None, logger=None):
         """
         :param str process_command: process command string
         :param int reload_threshold_seconds: reload min threshold seconds.
@@ -22,6 +24,7 @@ class PyWatcher(FileSystemEventHandler):
         self.process_command = process_command
         self.reload_threshold_seconds = reload_threshold_seconds
         self.is_capture_subprocess_output = is_capture_subprocess_output
+        self.is_use_shell = is_use_shell
         self.pattern_list = pattern_list or ['*']
         self.reload_signal = reload_signal
 
@@ -35,14 +38,23 @@ class PyWatcher(FileSystemEventHandler):
         :return:
         """
         self.logger.info('[start process]: {}'.format(self.process_command))
-        process = subprocess.Popen(
-            self.process_command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            bufsize=0,
-            close_fds=True
-        )
+        if self.is_use_shell:
+            process = subprocess.Popen(
+                self.process_command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                bufsize=0,
+                close_fds=True
+            )
+        else:
+            process = subprocess.Popen(
+                shlex.split(self.process_command),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                bufsize=0,
+                close_fds=True
+            )
         self.logger.info('[start process]: PID is {}'.format(process.pid))
         # run subprocess stream watcher thread.
         if self.is_capture_subprocess_output:

@@ -94,17 +94,27 @@ def init():
         help='reload_signal'
     )
 
+    parser.add_argument(
+        '--is-use-shell',
+        required=False,
+        action='store_true',
+        default=False,
+        dest='is_use_shell',
+        help='use shell=True ?'
+    )
+
     return parser.parse_args()
 
 
 def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_list,
-                reload_signal, is_disable_capture_stdout):
+                is_use_shell, reload_signal, is_disable_capture_stdout):
     while True:
         event_handler = PyWatcher(
             process_command=command,
             reload_threshold_seconds=reload_threshold_seconds,
             is_capture_subprocess_output=not is_disable_capture_stdout,
             pattern_list=watch_pattern_list,
+            is_use_shell=is_use_shell,
             reload_signal=reload_signal,
             logger=logger
         )
@@ -128,6 +138,7 @@ def main():
         target_dir=args.target_dir_path,
         command=args.target_command_str,
         reload_threshold_seconds=args.reload_threshold_seconds,
+        is_use_shell=args.is_use_shell,
         watch_pattern_list=args.target_pattern_list,
         reload_signal=args.reload_signal,
         is_disable_capture_stdout=args.is_disable_capture_stdout,
