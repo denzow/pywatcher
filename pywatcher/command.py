@@ -65,6 +65,15 @@ def init():
     )
 
     parser.add_argument(
+        '--reload-wait-seconds',
+        type=int,
+        required=False,
+        default=0,
+        dest='reload_wait_seconds',
+        help='reload wait seconds.'
+    )
+
+    parser.add_argument(
         '--disable-capture-stdout',
         required=False,
         action='store_true',
@@ -107,7 +116,7 @@ def init():
 
 
 def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_list,
-                is_use_shell, reload_signal, is_disable_capture_stdout):
+                reload_wait_seconds, is_use_shell, reload_signal, is_disable_capture_stdout):
     while True:
         event_handler = PyWatcher(
             process_command=command,
@@ -116,6 +125,7 @@ def main_action(target_dir, command, reload_threshold_seconds, watch_pattern_lis
             pattern_list=watch_pattern_list,
             is_use_shell=is_use_shell,
             reload_signal=reload_signal,
+            reload_wait_seconds=reload_wait_seconds,
             logger=logger
         )
         observer = Observer()
@@ -141,6 +151,7 @@ def main():
         is_use_shell=args.is_use_shell,
         watch_pattern_list=args.target_pattern_list,
         reload_signal=args.reload_signal,
+        reload_wait_seconds=args.reload_wait_seconds,
         is_disable_capture_stdout=args.is_disable_capture_stdout,
     )
 
