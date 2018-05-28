@@ -39,11 +39,14 @@ optional arguments:
                         target command. this command execute and restart when file changed.
   -s RELOAD_THRESHOLD_SECONDS, --reload-interval-seconds RELOAD_THRESHOLD_SECONDS
                         reload threshold seconds.
+  --reload-wait-seconds RELOAD_WAIT_SECONDS
+                        reload wait seconds.
   --disable-capture-stdout
                         is_disable_capture_stdout
   -p [TARGET_PATTERN [TARGET_PATTERN ...]], --pattern [TARGET_PATTERN [TARGET_PATTERN ...]]
                         target pattern for monitoring. default, all file match.
   --signal {TERM,KILL}  reload_signal
+  --is-use-shell        use shell=True ?
 ```
 
 if you quit PyWatcher, then `ctrl + c`.
